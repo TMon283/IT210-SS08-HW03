@@ -1,0 +1,30 @@
+Input:
+- withdrawAmount (kiểu Long) được truyền từ request body
+- Có thể nhận giá trị hợp lệ (>= 50.000, bội số của 10.000) hoặc dữ liệu sai
+(null, âm, hoặc số lẻ không phải bội số)
+
+Output:
+- Nếu hợp lệ -> Controller tiếp tục xử lý rút tiền
+- Nếu không hợp lệ -> Bean Validation trả về lỗi kèm thông báo rõ ràng
+
+Giải pháp:
+- Tạo Custom Annotation @MultipleOfTenThousand Kết hợp với @Min(50000) để đảm bảo điều kiện >= 50.000
+- Validator sẽ kiểm tra:
+    + withdrawAmount == null -> invalid
+    + withdrawAmount < 0 -> invalid
+    + withdrawAmount % 10000 != 0 -> invalid
+    + Nếu tất cả điều kiện đều đúng -> valid
+
+Ví dụ các bước kiểm tra logic trong Validator:
+
+function isValid(value) {
+    if (value == null) {
+        return false;
+    } else if (value < 0) {
+        return false;
+    } else if (value % 10000 != 0) {
+        return false;
+    } else {
+        return true;
+    }
+}
